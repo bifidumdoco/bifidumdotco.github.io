@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIFIDUM.CO - TOYOTA CORONA ABSOLUTE PARTS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+
+    <div class="ui-container">
+        <!-- Header -->
+        <header class="top-bar">
+            <div class="logo">BIFIDUM<span class="highlight">.CO</span></div>
+            <div class="screen-title">GARAGE // PARTS SELECTION</div>
+            <div class="clock">CREDITS: 0</div>
+        </header>
+
+        <!-- Main Content Grid -->
+        <main class="main-grid">
+            <!-- Left Sidebar: Menu & Camera -->
+            <aside class="sidebar-left">
+                <div class="menu-list">
+                    <div class="menu-item active" data-target="master-switch">
+                        <span class="icon">▶</span> MASTER SWITCH
+                    </div>
+                    <div class="menu-item disabled">
+                        <span class="icon"> </span> DOOR TRIM (LOCKED)
+                    </div>
+                    <div class="menu-item disabled">
+                        <span class="icon"> </span> SPEEDOMETER (LOCKED)
+                    </div>
+                    <div class="menu-item back-btn">
+                        <span class="icon">◀</span> EXIT GARAGE
+                    </div>
+                </div>
+
+                <div class="camera-controls">
+                    <div class="control-header">CAMERA VIEW</div>
+                    <div class="cam-btns">
+                        <button class="cam-btn" onclick="setCamera('side')">[ SIDE ]</button>
+                        <button class="cam-btn" onclick="setCamera('top')">[ TOP ]</button>
+                        <button class="cam-btn" onclick="setCamera('front')">[ FRONT ]</button>
+                        <button class="cam-btn" onclick="setCamera('iso')">[ ISO ]</button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Center: 3D Viewport -->
+            <div class="stage-container">
+                <div id="canvas-container"></div>
+                <div class="loading-overlay" id="loader">
+                    <div class="loader-text">LOADING ASSETS...</div>
+                    <div class="loader-bar"><div class="bar-fill"></div></div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar: Product Stats (Optional, strictly following retro layout usually bottom or right) -->
+            <!-- We'll put main stats at bottom for that GT vibe -->
+        </main>
+
+        <!-- Bottom Panel: Specs & Info -->
+        <footer class="bottom-panel">
+            <div class="info-box product-desc">
+                <h2 class="box-title">PART INFORMATION</h2>
+                <div class="scroll-text">
+                    <p class="highlight-text">MASTER POWER WINDOW SWITCH / CENTRAL POWER WINDOW SWITCH</p>
+                    <p>CHASSIS: ST191 (TOYOTA CORONA ABSOLUTE '92-'98)</p>
+                    <p>PART NO: 84820-20150 / 84820-33060</p>
+                    <p>DESC: Original Toyota Part. Control unit for driver's door. Features Auto Down, Window Lock, and Central Lock controls. Intact housing, no cracks. Switch functions normally.</p>
+                </div>
+            </div>
+
+            <div class="info-box stats-grid">
+                <h2 class="box-title">MARKET DATA</h2>
+                <div class="stat-row">
+                    <span class="stat-label">PRICE</span>
+                    <span class="stat-value price">Rp. 850.000</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">CONDITION</span>
+                    <span class="stat-value">USED / ORIGINAL</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">LOCATION</span>
+                    <span class="stat-value">DEPOK, CILODONG</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">CONTACT</span>
+                    <span class="stat-value phone">+62 858-8057-4423</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- Audio Elements -->
+    <audio id="sfx-select" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
+    <audio id="sfx-hover" src="https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3"></audio>
+
+    <!-- Import Map for Three.js -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
