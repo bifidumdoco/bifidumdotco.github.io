@@ -1,13 +1,16 @@
 :root {
     --bg-color: #050510;
-    --primary-blue: #0044cc;
+    --primary-blue: #55ffff;
+    /* Cyan/Terminal Blue */
     --accent-gold: #ffcc00;
-    --text-silver: #c0c0c0;
+    /* Arcade Yellow */
+    --text-silver: #cccccc;
     --text-white: #ffffff;
-    --hud-border: rgba(255, 255, 255, 0.3);
-    --scanline-color: rgba(0, 0, 0, 0.5);
-    --font-header: 'Orbitron', active;
-    --font-body: 'Rajdhani', sans-serif;
+    --hud-border: #55ffff;
+    --scanline-color: rgba(0, 0, 0, 0.4);
+    --font-header: 'Press Start 2P', cursive;
+    --font-body: 'VT323', monospace;
+    --shadow-glow: 0 0 5px var(--primary-blue), 0 0 10px var(--primary-blue);
 }
 
 body {
@@ -23,23 +26,58 @@ body {
 }
 
 /* --- CRT & Scanline Effects --- */
+/* --- CRT & Scanline Effects --- */
 .scanlines {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        to bottom,
-        rgba(255,255,255,0),
-        rgba(255,255,255,0) 50%,
-        rgba(0,0,0,0.2) 50%,
-        rgba(0,0,0,0.2)
-    );
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(to bottom,
+            rgba(18, 16, 16, 0) 50%,
+            rgba(0, 0, 0, 0.25) 50%);
     background-size: 100% 4px;
     z-index: 100;
     pointer-events: none;
-    animation: scrollLines 10s linear infinite;
+    animation: scanlineMove 0.5s linear infinite;
+}
+
+.scanlines::after {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(18, 16, 16, 0.1);
+    opacity: 0;
+    z-index: 100;
+    animation: flicker 0.15s infinite;
+}
+
+@keyframes scanlineMove {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: 0 4px;
+    }
+}
+
+@keyframes flicker {
+    0% {
+        opacity: 0.02;
+    }
+
+    50% {
+        opacity: 0.05;
+    }
+
+    100% {
+        opacity: 0.02;
+    }
 }
 
 .vignette {
@@ -48,42 +86,55 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,0.8) 100%);
+    background: radial-gradient(circle, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.8) 100%);
     z-index: 99;
     pointer-events: none;
 }
 
 @keyframes scrollLines {
-    0% { background-position: 0 0; }
-    100% { background-position: 0 4px; }
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: 0 4px;
+    }
 }
 
 /* --- UI Container & Layout --- */
 .ui-container {
-    display: grid;
-    grid-template-rows: 60px 1fr 180px;
-    height: 100vh;
-    padding: 0 40px;
-    box-sizing: border-box;
     position: relative;
-    z-index: 10;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
 }
 
 /* Header */
 .top-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid var(--hud-border);
-    padding: 0 20px;
+    padding: 0 40px;
+    box-sizing: border-box;
+    z-index: 20;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), transparent);
+    pointer-events: none;
+    /* Let clicks pass through if needed, but text selects might be hard. Keep auto if text needed. */
+    pointer-events: auto;
 }
 
 .logo {
     font-family: var(--font-header);
-    font-size: 24px;
-    font-weight: 900;
+    font-size: 20px;
+    font-weight: normal;
     color: var(--text-white);
-    text-shadow: 0 0 10px var(--primary-blue);
+    text-shadow: 2px 2px 0px #ff00ff, -2px -2px 0px #00ffff;
+    /* RGB Shift */
 }
 
 .screen-title {
@@ -100,20 +151,24 @@ body {
 }
 
 /* Main Grid */
+/* Main Grid - REMOVED, specific positioning now */
 .main-grid {
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 20px;
-    padding-top: 20px;
+    display: contents;
+    /* Removes the grid structure */
 }
 
 /* Left Sidebar */
+/* Left Sidebar - HUD Style */
 .sidebar-left {
+    position: absolute;
+    top: 80px;
+    left: 40px;
+    width: 300px;
+    height: auto;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-    padding-bottom: 20px;
+    gap: 20px;
+    z-index: 20;
 }
 
 .menu-list {
@@ -126,19 +181,21 @@ body {
     font-family: var(--font-header);
     font-size: 18px;
     padding: 10px 15px;
-    background: linear-gradient(90deg, transparent, rgba(0,0,0,0.5));
+    background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.5));
     border-left: 4px solid transparent;
     cursor: pointer;
     transition: all 0.2s ease;
     text-transform: uppercase;
 }
 
-.menu-item:hover, .menu-item.active {
-    background: linear-gradient(90deg, rgba(0,68,204,0.5), transparent);
+.menu-item:hover,
+.menu-item.active {
+    background: var(--primary-blue);
     border-left: 4px solid var(--accent-gold);
-    color: var(--text-white);
+    color: #000;
     padding-left: 25px;
-    text-shadow: 0 0 8px var(--primary-blue);
+    box-shadow: 0 0 10px var(--primary-blue);
+    text-shadow: none;
 }
 
 .menu-item.disabled {
@@ -155,15 +212,17 @@ body {
 .camera-controls {
     border: 1px solid var(--hud-border);
     padding: 15px;
-    background: rgba(0,0,0,0.3);
+    background: rgba(0, 0, 0, 0.3);
 }
 
 .control-header {
-    font-size: 14px;
+    font-family: var(--font-header);
+    font-size: 10px;
     color: var(--accent-gold);
     margin-bottom: 10px;
-    border-bottom: 1px solid var(--hud-border);
+    border-bottom: 2px solid var(--hud-border);
     padding-bottom: 5px;
+    text-transform: uppercase;
 }
 
 .cam-btns {
@@ -174,10 +233,10 @@ body {
 
 .cam-btn {
     background: transparent;
-    border: 1px solid var(--primary-blue);
+    border: 2px solid var(--primary-blue);
     color: var(--primary-blue);
-    font-family: var(--font-body);
-    font-weight: bold;
+    font-family: var(--font-header);
+    font-size: 10px;
     padding: 5px;
     cursor: pointer;
     transition: 0.2s;
@@ -190,13 +249,17 @@ body {
 }
 
 /* 3D Viewport */
+/* 3D Viewport - FULLSCREEN BACKGROUND */
 .stage-container {
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    border: 1px solid var(--hud-border);
+    z-index: 1;
+    /* Behind UI */
+    border: none;
     background: radial-gradient(circle at center, #1a1a2e 0%, #000000 100%);
-    overflow: hidden;
 }
 
 #canvas-container {
@@ -234,26 +297,59 @@ body {
 }
 
 @keyframes loadBar {
-    to { width: 100%; }
+    to {
+        width: 100%;
+    }
 }
 
 /* Bottom Panel */
+/* Bottom Panel -> Right HUD Panel */
 .bottom-panel {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 20px;
-    padding: 20px 0;
-    border-top: 2px solid var(--hud-border);
-    background: rgba(0,0,0,0.8);
+    position: absolute;
+    top: 80px;
+    right: 40px;
+    width: 320px;
+    /* Slightly narrower */
+    height: auto;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    /* Reduced gap */
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    /* More subtle background */
+    border: none;
+    /* Removed border */
+    z-index: 20;
+    /* Custom Scrollbar for Chrome/Safari */
+}
+
+.bottom-panel::-webkit-scrollbar {
+    width: 8px;
+}
+
+.bottom-panel::-webkit-scrollbar-track {
+    background: #000;
+}
+
+.bottom-panel::-webkit-scrollbar-thumb {
+    background: var(--primary-blue);
 }
 
 .box-title {
     margin: 0 0 10px 0;
     font-family: var(--font-header);
     font-size: 16px;
+    /* Proportional Header */
     color: var(--primary-blue);
-    border-bottom: 1px dashed var(--hud-border);
-    padding-bottom: 5px;
+    border-bottom: none;
+    /* Removed border */
+    padding-bottom: 0;
+    text-transform: uppercase;
+    text-decoration: underline;
+    /* Alternative to border */
 }
 
 .info-box {
@@ -261,15 +357,18 @@ body {
 }
 
 .scroll-text p {
-    margin: 5px 0;
+    margin: 6px 0;
     line-height: 1.4;
-    font-size: 14px;
+    font-size: 16px;
+    /* Balanced body text */
 }
 
 .highlight-text {
     color: var(--accent-gold);
     font-weight: bold;
-    font-size: 16px;
+    font-size: 18px;
+    /* Balanced Highlight */
+    text-shadow: none;
 }
 
 .stats-grid {
@@ -281,23 +380,31 @@ body {
 .stat-row {
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: none;
+    /* Removed border */
     padding-bottom: 2px;
 }
 
 .stat-label {
-    color: #666;
+    color: #aaa;
+    font-family: var(--font-header);
     font-size: 12px;
+    /* Proportional Label */
+    align-self: center;
 }
 
 .stat-value {
     color: var(--text-white);
-    font-weight: 600;
+    font-weight: normal;
+    font-size: 18px;
+    /* Proportional Value */
 }
 
 .stat-value.price {
     color: var(--accent-gold);
-    font-size: 18px;
+    font-size: 24px;
+    /* Distinct but not huge */
+    text-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
 }
 
 .stat-value.phone {
@@ -305,32 +412,84 @@ body {
 }
 
 /* Responsive */
+/* Responsive */
 @media (max-width: 768px) {
     .ui-container {
-        grid-template-rows: 50px 1fr 1fr;
-        padding: 0 10px;
+        position: relative;
         height: auto;
         min-height: 100vh;
-    }
-    
-    .main-grid {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto 300px;
+        overflow-y: auto;
     }
 
-    .sidebar-left {
-        flex-direction: row;
-        gap: 10px;
-        order: 2;
+    .top-bar {
+        position: relative;
+        background: #000;
     }
 
     .stage-container {
-        height: 300px;
-        order: 1;
+        position: relative;
+        height: 50vh;
+        top: 0;
+        left: 0;
+        border-bottom: 2px solid var(--hud-border);
+    }
+
+    .sidebar-left {
+        position: relative;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+        flex-direction: row;
+        flex-wrap: wrap;
+        background: rgba(0, 0, 0, 0.8);
+    }
+
+    .menu-list {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: 100%;
+        gap: 5px;
+    }
+
+    .menu-item {
+        flex: 1 1 45%;
+        /* 2 items per row */
+        font-size: 14px;
+        text-align: center;
+        padding: 10px 5px;
+        box-sizing: border-box;
+    }
+
+    .camera-controls {
+        width: 100%;
+        margin-top: 10px;
     }
 
     .bottom-panel {
-        grid-template-columns: 1fr;
-        order: 3;
+        position: relative;
+        top: 0;
+        right: 0;
+        width: 100%;
+        max-height: none;
+        box-sizing: border-box;
+        border: none;
+        border-top: 1px dashed var(--hud-border);
+        background: #000;
+        padding-bottom: 40px;
+    }
+
+    .box-title {
+        font-size: 14px;
+    }
+
+    .stat-value {
+        font-size: 16px;
+    }
+
+    .stat-value.price {
+        font-size: 20px;
     }
 }
